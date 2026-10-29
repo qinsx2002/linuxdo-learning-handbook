@@ -9,6 +9,7 @@
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="stylesheet" href="assets/handbook.css">
   <link rel="stylesheet" href="assets/lesson.css">
+  <link rel="stylesheet" href="assets/handbook-music.css">
   <script defer src="assets/content-foundations.js"></script>
   <script defer src="assets/content-engineering.js"></script>
   <script defer src="assets/content-retrieval.js"></script>
@@ -19,10 +20,34 @@
   <script defer src="assets/handbook-state.js"></script>
   <script defer src="assets/handbook-analytics.js"></script>
   <script defer src="assets/handbook-app.js"></script>
+  <script defer src="assets/handbook-music.js"></script>
 </head>
 <body>
   <a class="handbook-skip" href="#handbook-main">跳到正文</a>
   <div id="handbook-root"></div>
+  <div class="handbook-music" role="group" aria-label="背景音乐" hidden>
+    <audio id="handbook-music-audio" src="assets/baqianlilumingyuezhao.mp3" preload="none" loop></audio>
+    <button class="handbook-music-toggle" type="button" aria-label="播放背景音乐" aria-pressed="false" aria-controls="handbook-music-audio">
+      <span class="handbook-music-disc" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+          <path d="M9 18V5l11-2v13M9 9l11-2" />
+          <ellipse cx="6" cy="18" rx="3" ry="2.5" />
+          <ellipse cx="17" cy="16" rx="3" ry="2.5" />
+        </svg>
+      </span>
+    </button>
+    <div class="handbook-music-popover">
+      <div class="handbook-music-panel">
+        <p class="handbook-music-title">八千里路明月照</p>
+        <div class="handbook-music-volume-label">
+          <label for="handbook-music-volume">音量</label>
+          <output for="handbook-music-volume" id="handbook-music-volume-value">40%</output>
+        </div>
+        <input id="handbook-music-volume" type="range" min="0" max="100" step="1" value="40" aria-valuetext="40%">
+        <p class="handbook-music-status" role="status"></p>
+      </div>
+    </div>
+  </div>
   <noscript><p class="handbook-noscript">这本手册需要启用 JavaScript，才能显示章节、流程图和学习进度。</p></noscript>
 </body>
 </html>

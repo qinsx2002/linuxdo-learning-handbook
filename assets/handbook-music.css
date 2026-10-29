@@ -1,0 +1,78 @@
+.handbook-music {
+  position: fixed;
+  right: max(24px, env(safe-area-inset-right));
+  bottom: max(24px, env(safe-area-inset-bottom));
+  z-index: 21;
+}
+.handbook-music-toggle {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  padding: 5px;
+  border: 1px solid #afbea0;
+  border-radius: 50%;
+  background: var(--handbook-paper);
+  color: var(--handbook-green);
+  box-shadow: 2px 4px 12px #303b321a;
+  transition: background .2s, box-shadow .2s;
+}
+.handbook-music-toggle:hover,
+.handbook-music.is-playing .handbook-music-toggle {
+  background: var(--handbook-sage);
+  box-shadow: 2px 4px 16px #303b3226;
+}
+.handbook-music-disc {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border: 1px dashed #afbea0;
+  border-radius: 50%;
+  animation: handbook-music-spin 8s linear infinite;
+  animation-play-state: paused;
+}
+.handbook-music-disc svg { width: 22px; height: 22px; }
+.handbook-music.is-playing .handbook-music-disc { animation-play-state: running; }
+.handbook-music-popover {
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  width: 208px;
+  padding-bottom: 12px;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity .15s, transform .15s, visibility .15s;
+}
+/* 留出连续的悬浮区域，鼠标移向音量条时面板不会消失。 */
+.handbook-music:hover .handbook-music-popover,
+.handbook-music:focus-within .handbook-music-popover,
+.handbook-music.has-error .handbook-music-popover {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+.handbook-music-panel {
+  padding: 15px 17px 10px;
+  border: 1px solid var(--handbook-line);
+  border-radius: 8px 12px 6px 10px;
+  background: var(--handbook-paper);
+  box-shadow: 2px 4px 16px #303b321a;
+}
+.handbook-music-title { margin: 0 0 10px; color: var(--handbook-green); font: 600 14px/1.7 var(--handbook-serif); }
+.handbook-music-volume-label { display: flex; justify-content: space-between; font-size: 11px; }
+.handbook-music-volume-label output { font-variant-numeric: tabular-nums; }
+#handbook-music-volume { display: block; width: 100%; height: 28px; margin: 0; accent-color: var(--handbook-green); cursor: pointer; }
+.handbook-music-status { margin: 5px 0; color: #7e4028; font-size: 11px; }
+.handbook-music-status:empty { display: none; }
+@keyframes handbook-music-spin { to { transform: rotate(360deg); } }
+@media (max-width: 760px) {
+  .handbook-music { right: max(16px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom)); }
+  .handbook-music-toggle { width: 48px; height: 48px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .handbook-music-disc { animation: none; }
+  .handbook-music-toggle, .handbook-music-popover { transition: none; }
+}
+@media print { .handbook-music { display: none; } }
