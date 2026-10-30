@@ -1,11 +1,33 @@
+function renderLessonTitle(title) {
+  const renderPart = (text, leadingSpace = false) => `${leadingSpace ? ' ' : ''}<span class="lesson-title-part">${handbookEscape(text)}</span>`;
+  if (typeof Intl === 'undefined' || !Intl.Segmenter) return handbookEscape(title);
+  const units = [];
+  let pendingSpace = false;
+  for (const { segment } of new Intl.Segmenter('zh', { granularity: 'word' }).segment(title)) {
+    if (/^\s+$/u.test(segment)) { pendingSpace = true; continue; }
+    const appendToPrevious = units.length && !pendingSpace && (/^[\p{P}\p{S}]$/u.test(segment) || (segment.length === 1 && /^\p{Script=Han}$/u.test(segment)));
+    if (appendToPrevious) {
+      units[units.length - 1].text += segment;
+      continue;
+    }
+    units.push({ text: segment, space: pendingSpace });
+    pendingSpace = false;
+  }
+  return units.map(unit => renderPart(unit.text, unit.space)).join('');
+}
+
+function lessonToc() {
+  return `<aside class="lesson-toc" aria-label="本章目录"><p>这一页的小地图</p><a href="#lesson-flow" data-action="anchor">流程图解</a><a href="#lesson-concepts" data-action="anchor">理清概念</a><a href="#lesson-tasks" data-action="anchor">动手实践</a><a href="#lesson-quiz" data-action="anchor">理解自测</a><a href="#lesson-interview" data-action="anchor">表达练习</a><a href="#lesson-references" data-action="anchor">回到原文</a><a href="#lesson-notes" data-action="anchor">我的笔记</a><div>${handbookIcon('note')}<span>别急着翻页，<br>留一个自己的问题。</span></div></aside>`;
+}
+
 function lessonPage(chapter, state) {
   const index = HANDBOOK_CHAPTERS.indexOf(chapter);
   const stage = HANDBOOK_STAGES[chapter.stage];
   const words = JSON.stringify(chapter.sections).length;
   const readingMinutes = Math.ceil(words / 250);
   return `<div class="lesson-breadcrumb"><a href="#/">学习路线</a><span>/</span><a href="#/stage/${chapter.stage}">${stage.title}</a><span>/</span><span>第 ${String(index).padStart(2, '0')} 章</span></div>
-    <header class="lesson-header"><div class="lesson-header-top"><span class="handbook-eyebrow">CHAPTER ${String(index).padStart(2, '0')} / ${chapter.subtitle}</span><div><button class="handbook-icon-button" data-action="bookmark" data-chapter="${chapter.id}" aria-pressed="${state.bookmarks.includes(chapter.id)}" aria-label="${state.bookmarks.includes(chapter.id) ? '取消收藏' : '收藏章节'}">${handbookIcon('bookmark')}</button><button class="handbook-icon-button" data-action="print" aria-label="打印当前章节">${handbookIcon('print')}</button></div></div><h1>${chapter.title}</h1><p>${chapter.lead}</p><div class="lesson-meta"><span>${handbookIcon('clock')} 正文约 ${readingMinutes} 分钟</span><span>${chapter.effort}</span>${chapter.optional ? '<span class="handbook-tag">可选支线</span>' : ''}<span class="lesson-supplement">手册补充讲解</span></div></header>
-    <div class="lesson-layout"><article class="lesson-article">
+    <header class="lesson-header"><div class="lesson-header-top"><span class="handbook-eyebrow">CHAPTER ${String(index).padStart(2, '0')} / ${chapter.subtitle}</span><div><button class="handbook-icon-button" data-action="bookmark" data-chapter="${chapter.id}" aria-pressed="${state.bookmarks.includes(chapter.id)}" aria-label="${state.bookmarks.includes(chapter.id) ? '取消收藏' : '收藏章节'}">${handbookIcon('bookmark')}</button><button class="handbook-icon-button" data-action="print" aria-label="打印当前章节">${handbookIcon('print')}</button></div></div><h1>${renderLessonTitle(chapter.title)}</h1><p>${chapter.lead}</p><div class="lesson-meta"><span>${handbookIcon('clock')} 正文约 ${readingMinutes} 分钟</span><span>${chapter.effort}</span>${chapter.optional ? '<span class="handbook-tag">可选支线</span>' : ''}<span class="lesson-supplement">手册补充讲解</span></div></header>
+    <div class="lesson-layout">${lessonToc()}<article class="lesson-article">
       ${lessonFlow(chapter)}
       <section id="lesson-concepts" class="lesson-concepts"><p class="handbook-eyebrow">UNDERSTAND / 理清概念</p>${chapter.sections.map((section, position) => `<section><h2><span>${String(position + 1).padStart(2, '0')}</span>${section.title}</h2><p>${section.text}</p></section>`).join('')}</section>
       ${chapter.table ? lessonTable(chapter.table) : ''}${chapter.example ? lessonExample(chapter.example) : ''}
@@ -14,7 +36,7 @@ function lessonPage(chapter, state) {
       ${lessonReferences(chapter)}${lessonNotes(chapter, state)}
       <div class="lesson-finish"><div><strong>理解了，就留下一个脚印。</strong><p>完成标记由你决定，可以随时取消。</p></div><button class="handbook-button ${state.completed.includes(chapter.id) ? 'is-completed' : ''}" data-action="complete" data-chapter="${chapter.id}" aria-pressed="${state.completed.includes(chapter.id)}">${handbookIcon('check')}${state.completed.includes(chapter.id) ? '已学完 · 点击取消' : '标记本章已学完'}</button></div>
       ${lessonPagination(index)}
-    </article><aside class="lesson-toc" aria-label="本章导航"><p>这一页的小地图</p><a href="#lesson-flow" data-action="anchor">流程图解</a><a href="#lesson-concepts" data-action="anchor">理清概念</a><a href="#lesson-tasks" data-action="anchor">动手实践</a><a href="#lesson-quiz" data-action="anchor">理解自测</a><a href="#lesson-interview" data-action="anchor">表达练习</a><a href="#lesson-references" data-action="anchor">回到原文</a><a href="#lesson-notes" data-action="anchor">我的笔记</a><div>${handbookIcon('note')}<span>别急着翻页，<br>留一个自己的问题。</span></div></aside></div>`;
+    </article></div>`;
 }
 
 function lessonFlow(chapter) {
