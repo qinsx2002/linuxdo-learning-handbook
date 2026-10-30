@@ -31,6 +31,19 @@ function handbookIcon(name, className = '') {
   return `<svg class="handbook-icon ${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[name]}</svg>`;
 }
 
+const HANDBOOK_QUICK_LINKS = Object.freeze([
+  { href: '#/resources', label: '资料索引', icon: 'link' },
+  { href: '#/notes', label: '我的笔记', icon: 'note' }
+]);
+
+function handbookTopnav() {
+  return `<nav class="handbook-topnav" aria-label="快捷入口">${HANDBOOK_QUICK_LINKS.map(item => `<a href="${item.href}">${item.label}</a>`).join('')}</nav>`;
+}
+
+function handbookSidebarQuick() {
+  return `<nav class="handbook-sidebar-quick" aria-label="快捷入口">${HANDBOOK_QUICK_LINKS.map(item => `<a href="${item.href}">${handbookIcon(item.icon)} ${item.label} <span>↗</span></a>`).join('')}</nav>`;
+}
+
 function handbookShell() {
   return `<aside class="handbook-sidebar" id="handbook-sidebar" aria-label="手册目录"></aside>
     <button class="handbook-sidebar-toggle" data-action="sidebar-toggle" aria-controls="handbook-sidebar">${handbookIcon('collapse')}</button>
@@ -39,7 +52,7 @@ function handbookShell() {
       <header class="handbook-topbar">
         <button class="handbook-menu-button handbook-icon-button" data-action="menu" aria-label="打开目录" aria-expanded="false" aria-controls="handbook-sidebar">${handbookIcon('menu')}</button>
         <a href="#/" class="handbook-topbar-title">保持好奇，持续学习。</a>
-        <nav class="handbook-topnav" aria-label="快捷导航"><a href="#/resources">资料索引</a><a href="#/notes">我的笔记</a></nav>
+        ${handbookTopnav()}
         <div class="handbook-searchbox">${handbookIcon('search')}<input id="handbook-search" type="search" aria-label="搜索章节与知识点" placeholder="搜索知识点…" autocomplete="off"><kbd>/</kbd></div>
       </header>
       <main class="handbook-main" id="handbook-main" tabindex="-1"></main>
@@ -51,8 +64,10 @@ function handbookShell() {
 
 function handbookSidebar(state, activeId) {
   const progress = Math.round(state.completed.length / HANDBOOK_CHAPTERS.length * 100);
-  return `<a class="handbook-brand" href="#/">${handbookIcon('book')}<span>新码农手册<small>持续学习，动手实践。</small></span></a>
+  return `<button class="handbook-sidebar-close handbook-icon-button" data-action="menu-close" aria-label="关闭目录">${handbookIcon('close')}</button>
+    <a class="handbook-brand" href="#/">${handbookIcon('book')}<span>新码农手册<small>持续学习，动手实践。</small></span></a>
     <a class="handbook-overview ${activeId === 'home' ? 'is-active' : ''}" href="#/" ${activeId === 'home' ? 'aria-current="page"' : ''}>${handbookIcon('compass')} 学习路线 <span>↗</span></a>
+    ${handbookSidebarQuick()}
     <div class="handbook-sidebar-label">CONTENTS <span>目录</span></div>
     <nav class="handbook-chapter-nav" aria-label="学习章节">${HANDBOOK_STAGES.map((stage, index) => handbookSidebarStage({ stage, index, state, activeId })).join('')}</nav>
     <div class="handbook-progress"><div><span>我的学习足迹</span><strong>${state.completed.length}<small> / ${HANDBOOK_CHAPTERS.length}</small></strong></div>

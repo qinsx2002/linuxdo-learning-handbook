@@ -13,6 +13,8 @@
   --handbook-sans: "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei", sans-serif;
   --handbook-hand: "Kaiti SC", KaiTi, STKaiti, var(--handbook-serif);
   --handbook-sidebar-width: 254px;
+  --handbook-topbar-height: 77px;
+  --handbook-touch-target: 44px;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 96px; }
@@ -63,7 +65,7 @@ svg { display: block; }
 .handbook-progress progress::-webkit-progress-value { background: #7b9171; border-radius: 3px; }
 .handbook-progress p { margin: 9px 0 0; font-size: 10px; color: #969b8b; }
 .handbook-workspace { margin-left: var(--handbook-sidebar-width); min-height: 100vh; display: flex; flex-direction: column; transition: margin-left .2s; }
-.handbook-topbar { display: flex; align-items: center; gap: 28px; min-height: 77px; padding: 0 44px; border-bottom: 1px solid #e5e6db; background: var(--handbook-paper); position: sticky; top: 0; z-index: 20; }
+.handbook-topbar { display: flex; align-items: center; gap: 28px; min-height: var(--handbook-topbar-height); padding: 0 44px; border-bottom: 1px solid #e5e6db; background: var(--handbook-paper); position: sticky; top: 0; z-index: 20; }
 .handbook-topbar-title { color: #69775e; font-size: 11px; letter-spacing: .6px; margin-right: auto; }
 .handbook-topnav { display: flex; gap: 23px; white-space: nowrap; color: #687460; font-size: 12px; }
 .handbook-topnav a:hover { color: #2f4b32; text-decoration: underline; text-underline-offset: 5px; }
@@ -205,6 +207,7 @@ svg { display: block; }
 .handbook-icon-button svg { width: 17px; height: 17px; }
 .handbook-icon-button:hover, .handbook-icon-button[aria-pressed="true"] { background: #e3ead8; border-color: #b7c4a5; color: #44633f; }
 .handbook-noscript { margin: 50px; padding: 30px; border: 1px solid #d5c691; }
+.handbook-sidebar-close.handbook-icon-button, .handbook-sidebar-quick { display: none; }
 @media (min-width: 1600px) { .handbook-hero { padding-top: 78px; padding-bottom: 65px; }.handbook-hero h1 { font-size: 58px; } }
 @media (max-width: 1200px) {
   :root { --handbook-sidebar-width: 228px; }
@@ -241,42 +244,72 @@ svg { display: block; }
   .handbook-method h2 br { display: none; }
   .handbook-method-steps { margin-top: 12px; }
 }
-@media (max-width: 760px) {
-  .handbook-sidebar { transform: translateX(-100%); width: 270px; transition: transform .2s; }
+@media (max-width: 900px) {
+  :root { --handbook-topbar-height: 64px; }
+  .handbook-page-heading h1, .handbook-reading-card h2, .handbook-resource-card h2, .handbook-note-card h3, .handbook-stage-card h3 { text-wrap: balance; }
+  html { scroll-padding-top: calc(var(--handbook-topbar-height) + 66px); }
+  .handbook-sidebar { width: min(86vw, 310px); padding: max(18px, env(safe-area-inset-top)) 18px max(19px, env(safe-area-inset-bottom)); transform: translateX(-100%); transition: transform .2s; }
   .handbook-sidebar.is-open { transform: translateX(0); }
+  .handbook-sidebar-close.handbook-icon-button { display: inline-flex; position: absolute; top: max(12px, env(safe-area-inset-top)); right: 10px; z-index: 1; width: var(--handbook-touch-target); height: var(--handbook-touch-target); background: #e7e8dc; }
+  .handbook-brand { display: flex; align-items: center; min-height: var(--handbook-touch-target); margin: 0 3px 20px; padding-right: 42px; font-size: 18px; gap: 10px; }
+  .handbook-brand > svg { width: 35px; height: 38px; }
+  .handbook-overview { min-height: var(--handbook-touch-target); }
+  .handbook-sidebar-quick { display: flex; flex-direction: column; gap: 2px; margin: 8px 0 4px; padding: 0 0 12px; border-bottom: 1px dashed #c8cdbb; }
+  .handbook-sidebar-quick a { display: flex; align-items: center; gap: 10px; min-height: var(--handbook-touch-target); padding: 8px 12px; border-radius: 4px 7px 5px 6px; color: #65715e; font-size: 13px; }
+  .handbook-sidebar-quick a:hover { background: #e4e7db; color: var(--handbook-green); }
+  .handbook-sidebar-quick a > span { margin-left: auto; color: #8b927d; font-size: 11px; }
+  .handbook-sidebar-label { margin-top: 17px; }
+  .handbook-chapter-link { align-items: center; min-height: var(--handbook-touch-target); padding: 9px 8px; font-size: 13px; }
+  .handbook-chapter-link > .handbook-nav-dot { margin-top: 0; }
+  .handbook-chapter-link > small { margin-top: 1px; }
   .handbook-sidebar-toggle { display: none; }
   .handbook-workspace { margin-left: 0; }
-  .handbook-topbar { padding: 0 20px; min-height: 65px; gap: 17px; }
-  .handbook-menu-button.handbook-icon-button { display: inline-flex; flex-shrink: 0; }
+  .handbook-topbar { padding: 0 20px; gap: 12px; }
+  .handbook-menu-button.handbook-icon-button { display: inline-flex; flex-shrink: 0; width: var(--handbook-touch-target); height: var(--handbook-touch-target); }
+  .handbook-topbar-title { display: inline-flex; align-items: center; min-height: var(--handbook-touch-target); margin-right: 0; overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+  .handbook-topnav { display: none; }
+  .handbook-searchbox { flex: 1 1 auto; width: auto; max-width: 360px; min-height: var(--handbook-touch-target); margin-left: auto; padding: 0 12px; }
+  .handbook-searchbox input { height: var(--handbook-touch-target); font-size: 16px; }
+  .handbook-searchbox kbd { display: none; }
+  .handbook-icon-button { width: var(--handbook-touch-target); height: var(--handbook-touch-target); }
   .handbook-backdrop:not([hidden]) { display: block; position: fixed; inset: 0; z-index: 25; background: #26362550; border: none; }
-  .handbook-topnav { font-size: 11px; }
-  .handbook-searchbox { margin-left: auto; width: 190px; }
-  .handbook-main { padding-left: 25px; padding-right: 25px; padding-bottom: 40px; }
-  .handbook-hero { padding-top: 37px; padding-bottom: 35px; grid-template-columns: 1.2fr 1fr; }
-  .handbook-hero h1 { font-size: clamp(27px, 4.8vw, 39px); }
-  .handbook-hero-art { max-width: 285px; }
-  .handbook-footer { margin: 0 25px; }
-  .handbook-toast { left: 50%; width: max-content; max-width: calc(100vw - 36px); }
-  .handbook-storage-error { left: 0; }
+  .handbook-main { padding-left: 25px; padding-right: 25px; padding-bottom: max(40px, calc(env(safe-area-inset-bottom) + 24px)); }
+  .handbook-back-link { display: inline-flex; align-items: center; min-height: var(--handbook-touch-target); }
+  .handbook-text-link { min-height: var(--handbook-touch-target); }
+  .handbook-source-strip a { min-height: var(--handbook-touch-target); }
+  .handbook-stage-title { min-height: var(--handbook-touch-target); }
+  .handbook-stage-card li a { min-height: var(--handbook-touch-target); }
+  .handbook-notes-toolbar > .handbook-button, .handbook-notes-toolbar > .handbook-button-secondary { min-height: var(--handbook-touch-target); }
+  .handbook-resource-card > a { min-height: var(--handbook-touch-target); }
+  .handbook-resource-chapter { display: inline-flex; align-items: center; min-height: var(--handbook-touch-target); padding: 0 10px; }
+  .handbook-note-card > a { min-height: var(--handbook-touch-target); }
+  .handbook-hero { grid-template-columns: minmax(0, 1.1fr) minmax(240px, .9fr); padding-top: 37px; padding-bottom: 35px; }
+  .handbook-hero h1 { font-size: clamp(30px, 4.8vw, 39px); }
+  .handbook-hero-art { width: 100%; max-width: 320px; }
+  .handbook-footer { margin: 0 25px; padding-bottom: max(22px, calc(env(safe-area-inset-bottom) + 12px)); }
+  .handbook-footer > span, .handbook-footer > a, .handbook-footer-links a { min-height: var(--handbook-touch-target); }
+  .handbook-toast { left: 50%; width: max-content; max-width: calc(100vw - 32px); bottom: max(26px, calc(env(safe-area-inset-bottom) + 14px)); }
+  .handbook-storage-error { left: 0; padding-bottom: max(12px, env(safe-area-inset-bottom)); }
   .handbook-page-heading h1 { font-size: 31px; }
+  .handbook-filter { min-height: var(--handbook-touch-target); padding: 0 16px; }
+  .handbook-bookmark-list > a { min-height: var(--handbook-touch-target); }
   .handbook-resource-card { padding: 17px; }
   .handbook-route-section { padding-top: 35px; }
 }
 @media (max-width: 540px) {
-  .handbook-topbar { padding: 0 16px; gap: 13px; }
-  .handbook-topnav { gap: 12px; font-size: 10px; }
-  .handbook-searchbox { width: 150px; padding: 7px 8px; gap: 7px; }
-  .handbook-searchbox input { font-size: 10px; }
-  .handbook-searchbox kbd { display: none; }
+  .handbook-topbar { padding: 0 16px; gap: 10px; }
+  .handbook-topbar-title { display: none; }
+  .handbook-searchbox { max-width: none; padding: 0 10px; gap: 8px; }
   .handbook-main { padding-left: 21px; padding-right: 21px; }
+  .handbook-back-link { margin-bottom: 14px; }
   .handbook-hero { display: flex; flex-direction: column; align-items: flex-start; padding-bottom: 22px; }
-  .handbook-hero h1 { font-size: 36px; letter-spacing: .3px; }
-  .handbook-hero-copy > p { font-size: 12px; }
-  .handbook-hero-art { width: 83%; max-width: 310px; margin: 24px auto 0; }
-  .handbook-hero-meta { margin-top: 23px; font-size: 10px; }
+  .handbook-hero h1 { font-size: clamp(30px, 9vw, 36px); letter-spacing: .3px; }
+  .handbook-hero-copy > p { font-size: 14px; line-height: 1.95; }
+  .handbook-hero-art { width: 100%; max-width: 340px; margin: 20px auto 0; }
+  .handbook-hero-meta { margin-top: 23px; font-size: 11px; }
   .handbook-hero-actions { gap: 22px; }
-  .handbook-source-strip { gap: 9px; padding: 13px 12px; align-items: flex-start; }
-  .handbook-source-strip a { font-size: 9px; }
+  .handbook-source-strip { gap: 9px; padding: 13px 12px; align-items: flex-start; font-size: 11px; line-height: 1.7; }
+  .handbook-source-strip a { font-size: 10px; }
   .handbook-source-strip a svg { display: none; }
   .handbook-section-heading h2 { font-size: 21px; }
   .handbook-route-map { grid-template-columns: repeat(3, 1fr); row-gap: 24px; margin-bottom: 27px; }
@@ -284,27 +317,35 @@ svg { display: block; }
   .handbook-route-stop strong { font-size: 11px; }
   .handbook-route-stop small { font-size: 9px; }
   .handbook-stage-grid { grid-template-columns: 1fr; gap: 17px; }
-  .handbook-stage-card { padding: 24px; }
-  .handbook-stage-card li a { font-size: 12px; padding: 7px 0; }
+  .handbook-stage-card { padding: 22px; }
+  .handbook-stage-card li a { min-height: var(--handbook-touch-target); font-size: 13px; padding: 7px 0; }
   .handbook-stage-card h3 { font-size: 22px; }
   .handbook-method { padding: 24px; }
   .handbook-method h2 { font-size: 22px; }
   .handbook-method h2 br { display: block; }
   .handbook-method-steps { grid-template-columns: 1fr; gap: 14px; font-size: 12px; }
-  .handbook-footer { margin: 0 21px; gap: 15px; font-size: 9px; }
+  .handbook-footer { margin: 0 21px; gap: 10px; font-size: 10px; }
+  .handbook-footer-links { gap: 10px; }
   .handbook-page-heading { padding-top: 28px; }
   .handbook-page-heading h1 { font-size: 29px; }
   .handbook-reading-card { padding: 19px; gap: 15px; }
   .handbook-chapter-number { font-size: 25px; }
   .handbook-reading-card h2 { font-size: 19px; line-height: 1.7; }
+  .handbook-reading-card p { font-size: 13px; }
+  .handbook-reading-card small, .handbook-reading-card > div > span { font-size: 11px; }
   .handbook-reading-card > svg { display: none; }
   .handbook-resource-grid, .handbook-notes-grid { grid-template-columns: 1fr; }
-  .handbook-resource-card { padding: 23px; }
-  .handbook-notes-toolbar { gap: 10px; }
-  .handbook-notes-toolbar .handbook-button-secondary { padding: 10px 12px; font-size: 11px; }
+  .handbook-resource-card { padding: 20px; }
+  .handbook-notes-toolbar { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .handbook-notes-toolbar > .handbook-button, .handbook-notes-toolbar > .handbook-button-secondary { width: 100%; min-height: 46px; padding: 10px 8px; font-size: 12px; text-align: center; }
+  .handbook-import-label { grid-column: 1 / -1; }
+  .handbook-import-preview { padding: 18px; }
+  .handbook-import-preview > div { flex-direction: column; }
+  .handbook-import-preview > div > * { min-height: 46px; }
+  .handbook-empty { padding: 32px 20px; }
 }
-@media (max-width: 360px) { .handbook-topnav a:first-child { display: none; }.handbook-hero h1 { font-size: 31px; }.handbook-hero-actions { gap: 13px; } }
-@media (min-width: 761px) {
+@media (max-width: 360px) { .handbook-hero h1 { font-size: 31px; }.handbook-hero-actions { gap: 13px; } }
+@media (min-width: 901px) {
   body.is-sidebar-collapsed .handbook-sidebar { transform: translateX(-100%); }
   body.is-sidebar-collapsed .handbook-workspace { margin-left: 0; }
   body.is-sidebar-collapsed .handbook-sidebar-toggle { transform: translate(0, -50%); }

@@ -1,5 +1,5 @@
 const HANDBOOK_SIDEBAR_KEY = 'agent-handbook:sidebar';
-const HANDBOOK_MOBILE_QUERY = '(max-width: 760px)';
+const HANDBOOK_MOBILE_QUERY = '(max-width: 900px)';
 
 class HandbookApp {
   constructor({ root, storage }) {
@@ -250,11 +250,11 @@ class HandbookApp {
   trapMenuFocus(event) {
     const sidebar = this.root.querySelector('#handbook-sidebar');
     if (!sidebar.classList.contains('is-open')) return;
-    const links = Array.from(sidebar.querySelectorAll('a'));
-    const edge = event.shiftKey ? links[0] : links[links.length - 1];
+    const focusables = Array.from(sidebar.querySelectorAll('a, button'));
+    const edge = event.shiftKey ? focusables[0] : focusables[focusables.length - 1];
     if (document.activeElement !== edge) return;
     event.preventDefault();
-    (event.shiftKey ? links[links.length - 1] : links[0]).focus();
+    (event.shiftKey ? focusables[focusables.length - 1] : focusables[0]).focus();
   }
 
   filterResources(kind) {
